@@ -11,7 +11,8 @@ export enum Genders {
 
 export enum ProcessSignups {
     STEP1 = 'Created Username and Password',
-    STEP2 = 'Completed Information'
+    STEP2 = 'Authenticated Email',
+    STEP3 = 'Completed Information'
 }
 
 export enum TypeAccounts {

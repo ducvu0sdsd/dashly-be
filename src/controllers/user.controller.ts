@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { UserService } from "../services/user.service";
 import { CreateUserInterface } from "../helpers/commons/interfaces/user.interface";
+import { IUser } from "../models/userModels";
 
 export class UserController {
     private userService: UserService;
@@ -21,7 +22,7 @@ export class UserController {
                return res.status(200).json(user);
             })
             .catch(error => {
-                res.status(500).json({ message: "Internal server error", error });
+                return res.status(500).json({ message: error.message || "Internal server error" });
             });
     }
 
@@ -30,33 +31,24 @@ export class UserController {
         const data = req.body;
         this.userService.update(id, data)
             .then(user => {
-                if(user === 0) {
-                    return res.status(500).json({ message: "User not found" });
-                }
                 if(!user) {
                     return res.status(500).json({ message: user });
                 }
                 return res.status(200).json(user);
             })
             .catch(error => {
-                res.status(500).json({ message: "Internal server error", error });
+                return res.status(500).json({ message: error.message || "Internal server error" });
             });
     }
 
     delete(req: Request, res: Response): any {
         const id = req.params.id;
         this.userService.delete(id)
-            .then(user => {
-                if(user === 0) {
-                    return res.status(500).json({ message: "User not found" });
-                }
-                if(!user) {
-                    return res.status(500).json({ message: user });
-                }
-                return res.status(200).json({deleted: user});
+            .then(deleted => {
+                return res.status(200).json({deleted});
             })
             .catch(error => {
-                res.status(500).json({ message: "Internal server error", error });
+                return res.status(500).json({ message: error.message || "Internal server error" });
             });
     }
 
@@ -66,7 +58,7 @@ export class UserController {
                 return res.status(200).json(users);
             })
             .catch(error => {
-                res.status(500).json({ message: "Internal server error", error });
+                return res.status(500).json({ message: error.message || "Internal server error" });
             });
     }
 
@@ -74,16 +66,13 @@ export class UserController {
         const id = req.params.id;
         this.userService.getById(id)
             .then(user => {
-                if(user === 0) {
-                    return res.status(500).json({ message: "User not found" });
-                }
                 if(!user) {
                     return res.status(500).json({ message: user });
                 }
                 return res.status(200).json(user);
             })
             .catch(error => {
-                res.status(500).json({ message: "Internal server error", error });
+                return res.status(500).json({ message: error.message || "Internal server error" });
             });
     }
 }
