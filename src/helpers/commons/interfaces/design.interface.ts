@@ -14,7 +14,6 @@ export interface DesignInterface {
     createdAt: string;
     updatedAt: string;
     content: string;
-    deleted: boolean;
 }
 export interface CreateDesignInterface {
     name: string;

@@ -12,7 +12,6 @@ export interface IUser extends Document {
     bio: string;
     gender: Genders;
     socialLinks: string[];
-    deleted: boolean;
     auth: {
         username: string;
         password: string;
@@ -39,7 +38,6 @@ const UserSchema: Schema = new Schema(
     bio: { type: String, default: "" },
     gender: { type: String, default: Genders.OTHER },
     socialLinks: { type: [String], default: [] },
-    deleted: { type: Boolean, default: false },
     auth: {
       username: { type: String, default: "" },
       password: { type: String, default: "" },

@@ -25,7 +25,6 @@ export interface UserInterface {
     socialLinks: string[];
     createdAt: string;
     updatedAt: string;
-    deleted: boolean;
 }
 export interface UserOfDesignInterface {
     _id: string;
@@ -49,7 +48,6 @@ export interface UserUpdateInterface {
     bio?: string;
     gender?: Genders;
     socialLinks?: string[];
-    deleted?: boolean;
 }
 export interface AuthUpdateInterface {
     username?: string;

@@ -41,7 +41,7 @@ export class UserService {
             if(!exist) {
                 return 0;
             }
-            const result = await userModels.findByIdAndUpdate(id, { deleted: true }, { new: true, runValidators: true });
+            const result = await userModels.findByIdAndDelete(id);
             if(!result) {
                 return false;
             }
