@@ -1,5 +1,5 @@
 import userModels from "../models/userModels"
-import { CreateUserInterface, UserInterface, UserUpdateInterface } from '../helpers/commons/interfaces/user-interface';
+import { CreateUserInterface, UserInterface, UserUpdateInterface } from '../helpers/commons/interfaces/user.interface';
 import { HashPassword } from '../helpers/untils/bcryptUntil';
 export class UserService {
 

@@ -1,4 +1,4 @@
-import { Genders, ProcessSignups, Roles, TypeAccounts } from "../enums/users-enum";
+import { Genders, ProcessSignups, Roles, TypeAccounts } from "../enums/users.enum";
 export interface AuthInterface {
     username: string;
     password: string;

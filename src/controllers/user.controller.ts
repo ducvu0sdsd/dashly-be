@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { UserService } from "../services/user.service";
-import { CreateUserInterface } from "../helpers/commons/interfaces/user-interface";
+import { CreateUserInterface } from "../helpers/commons/interfaces/user.interface";
 
 export class UserController {
     private userService: UserService;
