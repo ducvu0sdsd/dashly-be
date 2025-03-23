@@ -15,7 +15,6 @@ export interface IDesign extends Document {
     createdAt: string;
     updatedAt: string;
     content: string;
-    deleted: boolean;
 }
 
 const DesignSchema: Schema = new Schema(
@@ -32,7 +31,6 @@ const DesignSchema: Schema = new Schema(
         view: { type: Number, default: 0 },
         description: { type: String, required: true },
         content: { type: String, required: true },
-        deleted: { type: Boolean, default: false },
     },
     { timestamps: true } 
 );

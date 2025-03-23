@@ -35,7 +35,7 @@ export class DesignService {
             if(!exist) {
                 return 0;
             }
-            const result = await designModels.findByIdAndUpdate(id, { deleted: true }, { new: true });
+            const result = await designModels.findByIdAndDelete(id);
             if(!result) {
                 return false;
             }

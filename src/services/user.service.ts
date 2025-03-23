@@ -55,7 +55,7 @@ export class UserService {
             if(!exist) {
                 throw new Error('COMMON.MESSAGE.FAIL.USER_NOT_FOUND')
             }
-            const result = await userModels.findByIdAndUpdate(id, { deleted: true }, { new: true, runValidators: true });
+            const result = await userModels.findByIdAndDelete(id);
             if(!result) {
                 throw new Error('COMMON.MESSAGE.FAIL.COMMON_FAIL')
             }
