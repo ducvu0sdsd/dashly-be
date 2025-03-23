@@ -12,7 +12,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8080;
 const baseURL = process.env.BASE_URL || "http://localhost:3000";
-const baseURLDeploy = process.env.BASE_URL_DEPLOY || "https://your-deploy-url.com";
+const baseURLDeploy = process.env.BASE_URL_DEPLOY || "https://dashly.vercel.app";
 
 // Middleware
 app.use(express.json());
