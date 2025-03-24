@@ -60,3 +60,18 @@ export interface AuthUpdateInterface {
     processSignup?: ProcessSignups;
     typeAccount?: TypeAccounts;
 }
+
+export interface MailQueueInterface {
+    email: string;
+    otp: string;
+    createdAt: string;
+}
+
+export interface UserInformationInterface {
+    user_id: string;
+    fullName: string;
+    phoneNumber: string;
+    address: string;
+    dob: string;
+    gender: Genders
+}

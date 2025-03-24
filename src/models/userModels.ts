@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 import moment from "moment-timezone";
-import { Genders, ProcessSignups, Roles, TypeAccounts } from "../helpers/commons/enums/users.enum";
+import { Genders, ProcessSignups, Roles, TypeAccounts } from "../helpers/enums/users.enum";
 moment.tz.setDefault("Asia/Ho_Chi_Minh");
 
 export interface IUser extends Document {

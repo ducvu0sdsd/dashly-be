@@ -1,5 +1,5 @@
 import designModels from "../models/designModels";
-import { CreateDesignInterface } from "../helpers/commons/interfaces/design.interface";
+import { CreateDesignInterface } from "../helpers/interfaces/design.interface";
 import userModels from "../models/userModels";
 export class DesignService {
     public create = async (data: CreateDesignInterface): Promise<any> => {

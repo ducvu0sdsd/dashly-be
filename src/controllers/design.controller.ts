@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { DesignService } from "../services/design.service";
-import { CreateDesignInterface } from "../helpers/commons/interfaces/design.interface";
+import { CreateDesignInterface } from "../helpers/interfaces/design.interface";
 
 export class DesignController {
     private designService: DesignService;

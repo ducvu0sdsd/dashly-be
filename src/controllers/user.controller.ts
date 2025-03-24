@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { UserService } from "../services/user.service";
-import { CreateUserInterface } from "../helpers/commons/interfaces/user.interface";
+import { CreateUserInterface } from "../helpers/interfaces/user.interface";
 import { IUser } from "../models/userModels";
 
 export class UserController {
@@ -29,7 +29,7 @@ export class UserController {
     update(req: Request, res: Response): any {
         const id = req.params.id;
         const data = req.body;
-        this.userService.update(id, data)
+        this.userService.update({id, data})
             .then(user => {
                 if(!user) {
                     return res.status(500).json({ message: user });
