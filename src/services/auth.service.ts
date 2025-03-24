@@ -7,47 +7,70 @@ import { generateAccessToken, generateRefreshToken } from "../helpers/utils/jwt.
 import { MailService } from "./mail.service"
 import { UserService } from "./user.service"
 
-let mailQueue: MailQueueInterface[] = []
-
 export class AuthService {
 
     private mailService!: MailService
 
     private userService!: UserService
 
-    sendOTP = (email: string) => {
+    sendOTP = async (email: string) => {
 
-        const found = mailQueue.find(item => item.email === email)
+        try {
+            this.userService = new UserService()
 
-        if (found) {
+            const userFound = await this.userService.getByEmail(email)
 
-            this.mailService.sendOTP({email: email, otp: found.otp})
-        } else {
+            if (!userFound) {
+                throw new Error(FailMessages.NOT_FOUND_USER)
+            }
 
-            this.mailService = new MailService()
+            if (userFound.auth.verification.otp && userFound.auth.verification.createdAt) {
 
-            const otp = generateOTP()
+                this.mailService.sendOTP({email: email, otp: userFound.auth.verification.otp})
+            } else {
 
-            mailQueue.push({
-                email: email,
-                otp: otp,
-                createdAt: new Date().toISOString()
-            })
+                this.mailService = new MailService()
 
-            this.mailService.sendOTP({email: email, otp: otp})
+                const otp = generateOTP()
+
+                userFound.auth.verification.otp = otp
+
+                userFound.auth.verification.createdAt = new Date().toISOString()
+
+                await this.userService.update({id: userFound._id as string, data: userFound})
+
+                this.mailService.sendOTP({email: email, otp: otp})
+            }
+        } catch (error) {
+            throw error instanceof Error ? error : new Error(FailMessages.COMMON);
         }
     }
 
-    verifyOTP = ({email, otp}: {email: string, otp: string}) => {
-        
-        const found = mailQueue.find(item => item.email === email && item.otp === otp)
+    verifyOTP = async ({email, otp}: {email: string, otp: string}) => {
 
-        if (found) {
-            mailQueue = mailQueue.filter(item => item.email !== email && item.otp !== otp)
-            return true;
+        try {
+            this.userService = new UserService()
+
+            const userFound = await this.userService.getByEmail(email)
+
+            if (!userFound) {
+                throw new Error(FailMessages.NOT_FOUND_USER)
+            }
+
+            if (userFound.auth.verification.otp !== otp) {
+                throw new Error(FailMessages.INVALID_OTP)
+            }
+
+            userFound.auth.verification.otp = ''
+
+            userFound.auth.verification.createdAt = ''
+
+            await this.userService.update({id: userFound._id as string, data: userFound})
+
+            return false
+        } catch (error) {
+            throw error instanceof Error ? error : new Error(FailMessages.COMMON);
         }
-
-        return false
     }
 
     generateToken = (user_id : string) => {
@@ -73,7 +96,7 @@ export class AuthService {
                 throw new Error(FailMessages.NOT_FOUND_USER)
             }
 
-            const isOtpValid = this.verifyOTP({email: userFound.email, otp: otp})
+            const isOtpValid = await this.verifyOTP({email: userFound.email, otp: otp})
 
             if (!isOtpValid) {
                 throw new Error(FailMessages.INVALID_OTP)

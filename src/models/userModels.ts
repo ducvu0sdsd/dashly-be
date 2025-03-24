@@ -23,6 +23,10 @@ export interface IUser extends Document {
       isActive: boolean;
       processSignup: ProcessSignups;
       typeAccount: TypeAccounts;
+      verification: {
+        otp: string;
+        createdAt: string;
+      }
     };
     createdAt: string;
     updatedAt: string;
@@ -49,6 +53,10 @@ const UserSchema: Schema = new Schema(
       isActive: { type: Boolean, default: false },
       processSignup: { type: String, default: ProcessSignups.STEP1 }, 
       typeAccount: { type: String, default: TypeAccounts.NORMAL },
+      verification: {
+        otp: { type: String, default: "" },
+        createdAt: { type: String, default: "" }
+      }
     },
   },
   { timestamps: true }

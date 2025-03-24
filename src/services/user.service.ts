@@ -105,4 +105,17 @@ export class UserService {
             throw error instanceof Error ? error : new Error(FailMessages.COMMON);
         }
     }
+
+    public getByEmail = async (email: string): Promise<IUser> => {
+        try {
+            const result = await userModels.findOne({'email': email}).lean();
+            if(!result) {
+                throw new Error(FailMessages.NOT_FOUND_USER)
+            }
+            return result;
+
+        } catch (error) {
+            throw error instanceof Error ? error : new Error(FailMessages.COMMON);
+        }
+    }
 }
