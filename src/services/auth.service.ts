@@ -55,11 +55,11 @@ export class AuthService {
             const userFound = await this.userService.getByEmail(email)
 
             if (!userFound) {
-                throw new Error(FailMessages.NOT_FOUND_USER)
+                return false;
             }
 
             if (userFound.auth.verification.otp !== otp) {
-                throw new Error(FailMessages.INVALID_OTP)
+                return false;
             }
 
             userFound.auth.verification.otp = ''
@@ -68,7 +68,7 @@ export class AuthService {
 
             await this.userService.update({id: userFound._id as string, data: userFound})
 
-            return false
+            return true
         } catch (error) {
             throw error instanceof Error ? error : new Error(FailMessages.COMMON);
         }
