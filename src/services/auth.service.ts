@@ -39,7 +39,7 @@ export class AuthService {
 
                 await this.userService.update({id: userFound._id as string, data: userFound})
 
-                this.mailService.sendOTP({email: email, otp: otp})
+                await this.mailService.sendOTP({email: email, otp: otp})
             }
             return true
         } catch (error) {
