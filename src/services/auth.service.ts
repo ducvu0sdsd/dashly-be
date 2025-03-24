@@ -41,6 +41,7 @@ export class AuthService {
 
                 this.mailService.sendOTP({email: email, otp: otp})
             }
+            return true
         } catch (error) {
             throw error instanceof Error ? error : new Error(FailMessages.COMMON);
         }

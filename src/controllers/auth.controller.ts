@@ -55,6 +55,12 @@ export class AuthController {
     sendOTP(req: Request, res: Response): any {
         const {email} = req.body;
         this.authService.sendOTP(email)
+            .then(data => {
+                return res.status(200).json({message : SuccessMessages.COMPLETE_SIGNIN, data});
+            })
+            .catch(error => {
+                return res.status(500).json({ message: error.message || "Internal server error" });
+            });
     }
 
     signIn(req: Request, res: Response): any {
