@@ -4,6 +4,7 @@ import { CreateUserInterface, UserInformationInterface } from "../helpers/interf
 import { MailService } from "../services/mail.service";
 import { SuccessMessages } from "../helpers/enums/messages.enum";
 import { AuthService } from "../services/auth.service";
+import { TokensInterface } from "../helpers/interfaces/auth.interface";
 
 export class AuthController {
     private userService: UserService;
@@ -17,6 +18,7 @@ export class AuthController {
         this.signUpStep3 = this.signUpStep3.bind(this);
         this.sendOTP = this.sendOTP.bind(this);
         this.signIn = this.signIn.bind(this);
+        this.getByToken = this.getByToken.bind(this);
     }
 
     signUpStep1(req: Request, res: Response): any {
@@ -53,10 +55,10 @@ export class AuthController {
     }
 
     sendOTP(req: Request, res: Response): any {
-        const {email} = req.body;
+        const {email, answer} = req.body;
         this.authService.sendOTP(email)
             .then(data => {
-                return res.status(200).json({message : null, data});
+                return res.status(200).json({message : answer ? SuccessMessages.RESEND_OTP : null, data});
             })
             .catch(error => {
                 return res.status(500).json({ message: error.message || "Internal server error" });
@@ -68,6 +70,18 @@ export class AuthController {
         this.authService.signIn({username, password})
             .then(user => {
                 return res.status(200).json({message : SuccessMessages.COMPLETE_SIGNIN, data: user});
+            })
+            .catch(error => {
+                return res.status(500).json({ message: error.message || "Internal server error" });
+            });
+    }
+
+    getByToken(req: Request, res: Response): void {
+        const { user_id, tokens } = req as Request & { user_id?: string, tokens?: TokensInterface };
+
+        this.userService.getById(user_id as string)
+            .then(user => {
+                return res.status(200).json({tokens, data: user});
             })
             .catch(error => {
                 return res.status(500).json({ message: error.message || "Internal server error" });

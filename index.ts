@@ -6,7 +6,19 @@ import cors from "cors";
 import dotenv from "dotenv";
 import router from "./src/routes";
 
-// Load biến môi trường từ .env
+declare module "express-serve-static-core" {
+  interface Request {
+    tokens?: {
+      accessToken: string;
+      refreshToken: string;
+    };
+    user_id? : string;
+  }
+  interface Response {
+    status(code: number): this;
+  }
+}
+
 dotenv.config();
 
 const app = express();
@@ -24,7 +36,7 @@ app.use(compression());
 // Cấu hình CORS
 const corsOptions = {
   origin: [baseURL, baseURLDeploy],
-  allowedHeaders: ["Content-Type", "accessToken", "refreshToken", "userid"]
+  allowedHeaders: ["Content-Type", "x-refresh-token", "authorization"]
 };
 app.use(cors(corsOptions));
 

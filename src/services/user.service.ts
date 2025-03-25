@@ -118,4 +118,5 @@ export class UserService {
             throw error instanceof Error ? error : new Error(FailMessages.COMMON);
         }
     }
+
 }

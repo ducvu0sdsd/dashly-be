@@ -45,42 +45,40 @@ export class AuthService {
             }
             return true
         } catch (error) {
-            console.log(error)
             throw error instanceof Error ? error : new Error(FailMessages.COMMON);
         }
     }
 
-    verifyOTP = async ({email, otp}: {email: string, otp: string}) => {
+    verifyOTP = async ({userid, otp}: {userid: string, otp: string}) => {
 
         try {
             this.userService = new UserService()
 
-            const userFound = await this.userService.getByEmail(email)
+            const userFound = await this.userService.getById(userid)
 
             if (!userFound) {
-                return false;
+                throw new Error(FailMessages.NOT_FOUND_USER)
             }
 
             if (userFound.auth.verification.otp !== otp) {
-                return false;
+                throw new Error(FailMessages.INVALID_OTP)
             }
 
             userFound.auth.verification.otp = ''
 
             userFound.auth.verification.createdAt = ''
 
-            await this.userService.update({id: userFound._id as string, data: userFound})
+            return await this.userService.update({id: userFound._id as string, data: userFound})
 
-            return true
         } catch (error) {
             throw error instanceof Error ? error : new Error(FailMessages.COMMON);
         }
     }
 
-    generateToken = (user_id : string) => {
+    generateTokens = ({user_id, remainTime} : {user_id: string, remainTime?: string}) => {
         const accessToken = generateAccessToken(user_id)
 
-        const refreshToken = generateRefreshToken(user_id)
+        const refreshToken = generateRefreshToken({user_id, remainTime})
 
         return {
             accessToken,
@@ -94,23 +92,13 @@ export class AuthService {
 
             this.userService = new UserService()
 
-            const userFound = await this.userService.getById(userid)
+            const userUpdatedOTP = await this.verifyOTP({userid, otp: otp})
 
-            if (!userFound) {
-                throw new Error(FailMessages.NOT_FOUND_USER)
-            }
+            userUpdatedOTP.auth.emailVerify = true;
 
-            const isOtpValid = await this.verifyOTP({email: userFound.email, otp: otp})
+            userUpdatedOTP.auth.processSignup = ProcessSignups.STEP2;
 
-            if (!isOtpValid) {
-                throw new Error(FailMessages.INVALID_OTP)
-            }
-
-            userFound.auth.emailVerify = true;
-
-            userFound.auth.processSignup = ProcessSignups.STEP2;
-
-            const userUpdated = await this.userService.update({id: userid, data: userFound})
+            const userUpdated = await this.userService.update({id: userid, data: userUpdatedOTP})
 
             return userUpdated
 
@@ -135,7 +123,7 @@ export class AuthService {
 
             return {
                 user: userUpdated,
-                tokens: this.generateToken(userUpdated._id as string)
+                tokens: this.generateTokens({user_id: userUpdated._id as string})
             }
 
         } catch (error) {
@@ -161,7 +149,7 @@ export class AuthService {
             
             return {
                 user: userFound,
-                tokens: this.generateToken(userFound._id as string)
+                tokens: this.generateTokens({user_id: userFound._id as string})
             }
 
         } catch (error) {
