@@ -16,6 +16,8 @@ export class AuthService {
     sendOTP = async (email: string) => {
 
         try {
+            this.mailService = new MailService()
+
             this.userService = new UserService()
 
             const userFound = await this.userService.getByEmail(email)
@@ -43,6 +45,7 @@ export class AuthService {
             }
             return true
         } catch (error) {
+            console.log(error)
             throw error instanceof Error ? error : new Error(FailMessages.COMMON);
         }
     }
