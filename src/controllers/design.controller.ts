@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { DesignService } from "../services/design.service";
 import { CreateDesignInterface } from "../helpers/interfaces/design.interface";
+import { SuccessMessages } from "../helpers/enums/messages.enum";
 
 export class DesignController {
     private designService: DesignService;
@@ -19,13 +20,10 @@ export class DesignController {
         const body: CreateDesignInterface = req.body;
         this.designService.create(body)
             .then(design => {
-                if(design === "Not found user") {
-                    return res.status(500).json({ message: "User not found" });
-                }
-               return res.status(200).json(design);
+                return res.status(200).json({message : SuccessMessages.CREATED_DESIGN, data: design});
             })
             .catch(error => {
-                res.status(500).json({ message: "Internal server error", error });
+                return res.status(500).json({ message: error.message || "Internal server error" });
             });
     }
 
@@ -34,16 +32,10 @@ export class DesignController {
         const data = req.body;
         this.designService.update(id, data)
             .then(design => {
-                if(design === 0) {
-                    return res.status(500).json({ message: "Design not found" });
-                }
-                if(!design) {
-                    return res.status(500).json({ message: design });
-                }
-                return res.status(200).json(design);
+                return res.status(200).json({message : SuccessMessages.UPDATED_DESIGN, data: design});
             })
             .catch(error => {
-                res.status(500).json({ message: "Internal server error", error });
+                return res.status(500).json({ message: error.message || "Internal server error" });
             });
     }
 
@@ -51,26 +43,20 @@ export class DesignController {
         const id = req.params.id;
         this.designService.delete(id)
             .then(design => {
-                if(design === 0) {
-                    return res.status(500).json({ message: "Design not found" });
-                }
-                if(!design) {
-                    return res.status(500).json({ message: design });
-                }
-                return res.status(200).json({deleted: design});
+                return res.status(200).json({message : SuccessMessages.DELETED_DESIGN, data: design});
             })
             .catch(error => {
-                res.status(500).json({ message: "Internal server error", error });
+                return res.status(500).json({ message: error.message || "Internal server error" });
             });
     }
 
     getAll(req: Request, res: Response): any {
         this.designService.getAll()
             .then(designs => {
-                return res.status(200).json(designs);
+                return res.status(200).json({data: designs});
             })
             .catch(error => {
-                res.status(500).json({ message: "Internal server error", error });
+                return res.status(500).json({ message: error.message || "Internal server error" });
             });
     }
 
@@ -78,16 +64,10 @@ export class DesignController {
         const id = req.params.id;
         this.designService.getById(id)
             .then(design => {
-                if(design === 0) {
-                    return res.status(500).json({ message: "Design not found" });
-                }
-                if(!design) {
-                    return res.status(500).json({ message: design });
-                }
-                return res.status(200).json(design);
+                return res.status(200).json({data: design});
             })
             .catch(error => {
-                res.status(500).json({ message: "Internal server error", error });
+                return res.status(500).json({ message: error.message || "Internal server error" });
             });
     }
     
@@ -95,13 +75,10 @@ export class DesignController {
         const userid = req.params.userid;
         this.designService.getByUserId(userid)
             .then(designs => {
-                if(designs === "Not found user") {
-                    return res.status(500).json({ message: "User not found" });
-                }
-                return res.status(200).json(designs);
+                return res.status(200).json({data: designs});
             })
             .catch(error => {
-                res.status(500).json({ message: "Internal server error", error });
+                return res.status(500).json({ message: error.message || "Internal server error" });
             });
     }
 }

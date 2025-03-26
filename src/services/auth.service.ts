@@ -109,7 +109,7 @@ export class AuthService {
 
     signUpStep3 = async (data: UserInformationInterface) => {
         try {
-            const { address, dob, fullName, gender, phoneNumber, user_id } = data
+            const { address, dob, fullName, gender, phoneNumber, user_id, country } = data
 
             this.userService = new UserService()
 
@@ -119,7 +119,7 @@ export class AuthService {
                 throw new Error(FailMessages.NOT_FOUND_USER)
             }
 
-            const userUpdated = await this.userService.update({id: user_id, data: {...userFound, address, dob, fullName, gender, phoneNumber, auth : {...userFound.auth, processSignup: ProcessSignups.STEP3}}})
+            const userUpdated = await this.userService.update({id: user_id, data: {...userFound, address, dob, fullName, gender, phoneNumber, country, auth : {...userFound.auth, processSignup: ProcessSignups.STEP3}}})
 
             return {
                 user: userUpdated,

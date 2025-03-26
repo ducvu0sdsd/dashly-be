@@ -73,5 +73,6 @@ export interface UserInformationInterface {
     phoneNumber: string;
     address: string;
     dob: string;
-    gender: Genders
+    gender: Genders;
+    country: string;
 }

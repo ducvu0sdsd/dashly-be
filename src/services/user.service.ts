@@ -1,11 +1,8 @@
 import userModels, { IUser } from "../models/userModels"
-import { CreateUserInterface, MailQueueInterface, UserInterface, UserUpdateInterface } from '../helpers/interfaces/user.interface';
+import { CreateUserInterface } from '../helpers/interfaces/user.interface';
 import { HashPassword } from "../helpers/utils/bcrypt.util";
 import { TypeAccounts } from "../helpers/enums/users.enum";
 import { FailMessages } from "../helpers/enums/messages.enum";
-import { MailService } from "./mail.service";
-import { generateOTP } from "../helpers/utils/common.util";
-import { AuthService } from "./auth.service";
 export class UserService {
 
     public create = async (data: CreateUserInterface): Promise<IUser> => {
@@ -118,5 +115,6 @@ export class UserService {
             throw error instanceof Error ? error : new Error(FailMessages.COMMON);
         }
     }
+
 
 }

@@ -15,13 +15,13 @@ export class Middleware {
             const refreshToken = req.headers["x-refresh-token"] as string;
 
             if (!authHeader || !refreshToken) {
-                res.status(500).json({ message: null, error: "Missing authentication details" });
+                res.status(500).json({ message: '', error: "Missing authentication details" });
                 return; 
             }
 
             const accessToken = authHeader.split(" ")[1];
             if (!accessToken) {
-                res.status(401).json({ message: null, error: "Access token is missing" });
+                res.status(401).json({ message: '', error: "Access token is missing" });
                 return;
             }
 
@@ -30,7 +30,7 @@ export class Middleware {
                 if (err) {
                     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string, async (error, decodedRefreshToken) => {
                         if (error) {
-                            res.status(401).json({ message: null, error: "Refresh token expired, please log in again" });
+                            res.status(401).json({ message: '', error: "Refresh token expired, please log in again" });
                             return;
                         }
 
@@ -48,7 +48,7 @@ export class Middleware {
                             req.tokens = newTokens;
                             return next();
                         } catch (genError) {
-                            res.status(500).json({ message: null, error: "Failed to generate new tokens" });
+                            res.status(500).json({ message: '', error: "Failed to generate new tokens" });
                             return;
                         }
                     });

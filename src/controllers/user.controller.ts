@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { UserService } from "../services/user.service";
 import { CreateUserInterface } from "../helpers/interfaces/user.interface";
 import { IUser } from "../models/userModels";
+import { SuccessMessages } from "../helpers/enums/messages.enum";
 
 export class UserController {
     private userService: UserService;
@@ -19,7 +20,7 @@ export class UserController {
         const body: CreateUserInterface = req.body;
         this.userService.create(body)
             .then(user => {
-               return res.status(200).json(user);
+               return res.status(200).json({message : SuccessMessages.CREATE_USER, data: user});
             })
             .catch(error => {
                 return res.status(500).json({ message: error.message || "Internal server error" });
@@ -31,10 +32,7 @@ export class UserController {
         const data = req.body;
         this.userService.update({id, data})
             .then(user => {
-                if(!user) {
-                    return res.status(500).json({ message: user });
-                }
-                return res.status(200).json(user);
+                return res.status(200).json({message : SuccessMessages.UPDATE_USER, data: user});
             })
             .catch(error => {
                 return res.status(500).json({ message: error.message || "Internal server error" });
@@ -45,7 +43,7 @@ export class UserController {
         const id = req.params.id;
         this.userService.delete(id)
             .then(deleted => {
-                return res.status(200).json({deleted});
+                return res.status(200).json({message : SuccessMessages.DELETE_USER, data: deleted});
             })
             .catch(error => {
                 return res.status(500).json({ message: error.message || "Internal server error" });
@@ -75,4 +73,6 @@ export class UserController {
                 return res.status(500).json({ message: error.message || "Internal server error" });
             });
     }
+
+    
 }

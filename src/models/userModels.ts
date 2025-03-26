@@ -12,6 +12,7 @@ export interface IUser extends Document {
     email: string;
     bio: string;
     gender: Genders;
+    country: string;
     socialLinks: string[];
     auth: {
       username: string;
@@ -39,10 +40,18 @@ const UserSchema: Schema = new Schema(
     avatar: { type: String, default: "https://th.bing.com/th/id/R.be953f29410b3d18ef0e5e0fbd8d3120?rik=Dm2iDRVLgVcpdA&pid=ImgRaw&r=0" },
     phoneNumber: { type: String, default: "" },
     address: { type: String, default: "" },
+    country: { type: String, default: "" },
     email: { type: String, default: "" },
     bio: { type: String, default: "" },
     gender: { type: String, default: Genders.OTHER },
-    socialLinks: { type: [String], default: [] },
+    socialLinks: { 
+      facebook: { type: String, default: "" },
+      instagram: { type: String, default: "" },
+      youtube: { type: String, default: "" },
+      linkedin: { type: String, default: "" },
+      github: { type: String, default: "" },
+      gitlab: { type: String, default: "" }
+    },
     auth: {
       username: { type: String, default: "" },
       password: { type: String, default: "" },

@@ -58,7 +58,7 @@ export class AuthController {
         const {email, answer} = req.body;
         this.authService.sendOTP(email)
             .then(data => {
-                return res.status(200).json({message : answer ? SuccessMessages.RESEND_OTP : null, data});
+                return res.status(200).json({message : answer ? SuccessMessages.RESEND_OTP : '', data});
             })
             .catch(error => {
                 return res.status(500).json({ message: error.message || "Internal server error" });
@@ -72,6 +72,7 @@ export class AuthController {
                 return res.status(200).json({message : SuccessMessages.COMPLETE_SIGNIN, data: user});
             })
             .catch(error => {
+                console.log(error)
                 return res.status(500).json({ message: error.message || "Internal server error" });
             });
     }
