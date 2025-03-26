@@ -172,6 +172,8 @@ export class AuthService {
         try {
             this.userService = new UserService()
 
+            this.mailService = new MailService()
+
             const userFound = await this.userService.getByEmail(email)
 
             if (!userFound) {
