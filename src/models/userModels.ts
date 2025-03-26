@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 import moment from "moment-timezone";
 import { Genders, ProcessSignups, Roles, TypeAccounts } from "../helpers/enums/users.enum";
+import { PasswordUsedInterface } from "../helpers/interfaces/user.interface";
 moment.tz.setDefault("Asia/Ho_Chi_Minh");
 
 export interface IUser extends Document {
@@ -18,7 +19,7 @@ export interface IUser extends Document {
       username: string;
       password: string;
       emailVerify: boolean;
-      passwordsUserd: string[];
+      passwordsUserd: PasswordUsedInterface[];
       lastLogin: string;
       role: Roles;
       isActive: boolean;
@@ -56,7 +57,14 @@ const UserSchema: Schema = new Schema(
       username: { type: String, default: "" },
       password: { type: String, default: "" },
       emailVerify: { type: Boolean, default: false },
-      passwordsUserd: { type: [String], default: [] },
+      passwordsUserd: { 
+        type: [{
+          timestamp: { type: String, default: "" },
+          password: { type: String, default: "" }
+        }], 
+        default: [], 
+        _id: false
+      },
       lastLogin: { type: String, default: new Date().toISOString() },
       role: { type: String,  default: Roles.USER },
       isActive: { type: Boolean, default: false },

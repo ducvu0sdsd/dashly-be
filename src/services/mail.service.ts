@@ -6,7 +6,7 @@ dotenv.config();
 
 export class MailService {
     
-    async sendOTP({email, otp} : {email: string, otp: string}): Promise<string | null> {
+    async sendOTP({email, subject, text, html, otp} : {otp: string,email: string, subject: string, text: string, html: string}): Promise<string | null> {
       
         const transporter = nodemailer.createTransport({
           host: process.env.SMTP_HOST,
@@ -21,9 +21,9 @@ export class MailService {
         const mailOptions = {
           from: process.env.SMTP_USER,
           to: email,
-          subject: "Mã OTP xác thực của bạn",
-          text: `Mã OTP của bạn là: ${otp}. Vui lòng không chia sẻ với ai.`,
-          html: `<p>Mã OTP của bạn là: <b>${otp}</b></p><p>Vui lòng không chia sẻ với ai.</p>`,
+          subject,
+          text,
+          html,
         };
       
         try {

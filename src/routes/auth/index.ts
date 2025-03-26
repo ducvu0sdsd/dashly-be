@@ -18,6 +18,8 @@ router.post("/sign-in", authController.signIn)
 
 router.post("/send-otp", authController.sendOTP)
 
+router.post("/forgot-password", authController.forgotPassword)
+
 router.post('/get-by-token', middleware.checkToken ,authController.getByToken)
 
 export default router;

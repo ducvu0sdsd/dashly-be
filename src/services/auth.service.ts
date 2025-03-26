@@ -27,8 +27,13 @@ export class AuthService {
             }
 
             if (userFound.auth.verification.otp && userFound.auth.verification.createdAt) {
-
-                this.mailService.sendOTP({email: email, otp: userFound.auth.verification.otp})
+                this.mailService.sendOTP({
+                    email: email, 
+                    otp: userFound.auth.verification.otp, 
+                    html: `<p>Mã OTP của bạn là: <b>${userFound.auth.verification.otp}</b></p><p>Vui lòng không chia sẻ với ai.</p>`,
+                    text: `Mã OTP của bạn là: ${userFound.auth.verification.otp}. Vui lòng không chia sẻ với ai.`,
+                    subject: "Mã OTP xác thực của bạn"
+                })
             } else {
 
                 this.mailService = new MailService()
@@ -41,7 +46,13 @@ export class AuthService {
 
                 await this.userService.update({id: userFound._id as string, data: userFound})
 
-                await this.mailService.sendOTP({email: email, otp: otp})
+                await this.mailService.sendOTP({
+                    email: email, 
+                    otp: otp,
+                    html: `<p>Mã OTP của bạn là: <b>${otp}</b></p><p>Vui lòng không chia sẻ với ai.</p>`,
+                    text: `Mã OTP của bạn là: ${otp}. Vui lòng không chia sẻ với ai.`,
+                    subject: "Mã OTP xác thực của bạn"
+                })
             }
             return true
         } catch (error) {
@@ -153,6 +164,50 @@ export class AuthService {
             }
 
         } catch (error) {
+            throw error instanceof Error ? error : new Error(FailMessages.COMMON);
+        }
+    }
+
+    forgotPassword = async (email: string) => {
+        try {
+            this.userService = new UserService()
+
+            const userFound = await this.userService.getByEmail(email)
+
+            if (!userFound) {
+                throw new Error(FailMessages.NOT_FOUND_USER)
+            }
+
+            if (userFound.auth.processSignup !== ProcessSignups.STEP3) {
+                throw new Error(FailMessages.NOT_COMPLETE_SIGNUP)
+            }
+
+            const newPassword = generateOTP()
+
+            const hashedPassword = await HashPassword.hash(newPassword);
+
+            userFound.auth.passwordsUserd = [...userFound.auth.passwordsUserd, {
+                timestamp: new Date().toISOString(),
+                password: userFound.auth.password
+            }]
+            
+            userFound.auth.password = hashedPassword
+
+            await this.userService.update({id: userFound._id as string, data: userFound})
+
+            await this.mailService.sendOTP({
+                email: email,
+                otp: newPassword,
+                html: `<p>Bạn đã yêu cầu đặt lại mật khẩu. Mật khẩu mới của bạn là: <b>${newPassword}</b></p><p>Vui lòng không chia sẻ với ai.</p>`,
+                text: `Bạn đã yêu cầu đặt lại mật khẩu. Mật khẩu mới của bạn là: ${newPassword}. Vui lòng không chia sẻ với ai.`,
+                subject: "Đặt lại mật khẩu Dashly của bạn"
+            });            
+
+            return true
+
+        } catch (error) {
+
+            console.log(error)
             throw error instanceof Error ? error : new Error(FailMessages.COMMON);
         }
     }

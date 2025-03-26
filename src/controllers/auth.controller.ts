@@ -16,6 +16,7 @@ export class AuthController {
         this.signUpStep1 = this.signUpStep1.bind(this);
         this.signUpStep2 = this.signUpStep2.bind(this);
         this.signUpStep3 = this.signUpStep3.bind(this);
+        this.forgotPassword = this.forgotPassword.bind(this);
         this.sendOTP = this.sendOTP.bind(this);
         this.signIn = this.signIn.bind(this);
         this.getByToken = this.getByToken.bind(this);
@@ -73,6 +74,17 @@ export class AuthController {
             })
             .catch(error => {
                 console.log(error)
+                return res.status(500).json({ message: error.message || "Internal server error" });
+            });
+    }
+
+    forgotPassword(req: Request, res: Response): any {
+        const {email} = req.body;
+        this.authService.forgotPassword(email)
+            .then(result => {
+                return res.status(200).json({message : SuccessMessages.FORGOT_PASSWORD, data: result});
+            })
+            .catch(error => {
                 return res.status(500).json({ message: error.message || "Internal server error" });
             });
     }

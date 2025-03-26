@@ -76,3 +76,8 @@ export interface UserInformationInterface {
     gender: Genders;
     country: string;
 }
+
+export interface PasswordUsedInterface {
+    timestamp: string;
+    password: string;
+}
