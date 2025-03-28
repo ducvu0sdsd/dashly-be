@@ -22,4 +22,6 @@ router.post("/forgot-password", authController.forgotPassword)
 
 router.post('/get-by-token', middleware.checkToken ,authController.getByToken)
 
+router.put('/reset-password/:userid', middleware.checkToken, authController.resetPassword)
+
 export default router;

@@ -17,6 +17,7 @@ export class AuthController {
         this.signUpStep2 = this.signUpStep2.bind(this);
         this.signUpStep3 = this.signUpStep3.bind(this);
         this.forgotPassword = this.forgotPassword.bind(this);
+        this.resetPassword = this.resetPassword.bind(this);
         this.sendOTP = this.sendOTP.bind(this);
         this.signIn = this.signIn.bind(this);
         this.getByToken = this.getByToken.bind(this);
@@ -101,4 +102,19 @@ export class AuthController {
             });
     }
 
+    resetPassword(req: Request, res: Response): any {
+        const { tokens } = req as Request & { tokens?: TokensInterface };
+
+        const {newPassword, oldPassword} = req.body;
+
+        const {userid} = req.params
+
+        this.authService.resetPassword(userid, oldPassword, newPassword)
+            .then(result => {
+                return res.status(200).json({message : SuccessMessages.RESER_PASSWORD, data: result, tokens});
+            })
+            .catch(error => {
+                return res.status(500).json({ message: error.message || "Internal server error" });
+            });
+    }
 }

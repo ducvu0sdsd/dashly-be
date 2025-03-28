@@ -213,4 +213,55 @@ export class AuthService {
             throw error instanceof Error ? error : new Error(FailMessages.COMMON);
         }
     }
+
+    resetPassword = async (user_id: string, oldPassword: string, newPassword: string) => {
+        try {
+            this.userService = new UserService()
+
+            const userFound = await this.userService.getById(user_id)
+
+            if (!userFound) {
+                throw new Error(FailMessages.NOT_FOUND_USER)
+            }
+
+            if (userFound.auth.processSignup !== ProcessSignups.STEP3) {
+                throw new Error(FailMessages.NOT_COMPLETE_SIGNUP)
+            }
+
+            const compareOldPassword = await HashPassword.compare({password: oldPassword, hashedPassword: userFound.auth.password})
+
+            if (!compareOldPassword) {
+                throw new Error(FailMessages.INVALID_PASSWORD)
+            }
+            
+            await Promise.all(userFound.auth.passwordsUserd.map(async (item) => {
+                const compareOldPasswordUsed = await HashPassword.compare({
+                    password: newPassword,
+                    hashedPassword: item.password
+                });
+            
+                if (compareOldPasswordUsed) {
+                    throw new Error(FailMessages.NEW_PASSWORD_USED);
+                }
+            }));
+
+            const hashedPassword = await HashPassword.hash(newPassword);
+
+            userFound.auth.passwordsUserd = [...userFound.auth.passwordsUserd, {
+                timestamp: new Date().toISOString(),
+                password: userFound.auth.password
+            }]
+
+            userFound.auth.password = hashedPassword
+
+            await this.userService.update({id: userFound._id as string, data: userFound})
+
+            return true
+
+        } catch (error) {
+
+            console.log(error)
+            throw error instanceof Error ? error : new Error(FailMessages.COMMON);
+        }
+    }
 }
