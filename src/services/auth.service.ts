@@ -259,8 +259,29 @@ export class AuthService {
             return true
 
         } catch (error) {
+            throw error instanceof Error ? error : new Error(FailMessages.COMMON);
+        }
+    }
 
-            console.log(error)
+    deleteAccount = async (user_id: string) => {
+        try {
+            this.userService = new UserService()
+
+            const userFound = await this.userService.getById(user_id)
+
+            if (!userFound) {
+                throw new Error(FailMessages.NOT_FOUND_USER)
+            }
+
+            if (userFound.auth.processSignup !== ProcessSignups.STEP3) {
+                throw new Error(FailMessages.NOT_COMPLETE_SIGNUP)
+            }
+
+            await this.userService.delete(userFound._id as string)
+
+            return true
+
+        } catch (error) {
             throw error instanceof Error ? error : new Error(FailMessages.COMMON);
         }
     }

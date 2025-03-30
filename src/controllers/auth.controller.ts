@@ -21,6 +21,7 @@ export class AuthController {
         this.sendOTP = this.sendOTP.bind(this);
         this.signIn = this.signIn.bind(this);
         this.getByToken = this.getByToken.bind(this);
+        this.deleteAccount = this.deleteAccount.bind(this);
     }
 
     signUpStep1(req: Request, res: Response): any {
@@ -74,7 +75,6 @@ export class AuthController {
                 return res.status(200).json({message : SuccessMessages.COMPLETE_SIGNIN, data: user});
             })
             .catch(error => {
-                console.log(error)
                 return res.status(500).json({ message: error.message || "Internal server error" });
             });
     }
@@ -112,6 +112,20 @@ export class AuthController {
         this.authService.resetPassword(userid, oldPassword, newPassword)
             .then(result => {
                 return res.status(200).json({message : SuccessMessages.RESER_PASSWORD, data: result, tokens});
+            })
+            .catch(error => {
+                return res.status(500).json({ message: error.message || "Internal server error" });
+            });
+    }
+
+    deleteAccount(req: Request, res: Response): any {
+        const { tokens } = req as Request & { tokens?: TokensInterface };
+
+        const {id} = req.params
+
+        this.authService.deleteAccount(id)
+            .then(result => {
+                return res.status(200).json({message : SuccessMessages.DELETE_ACCOUNT, data: result, tokens});
             })
             .catch(error => {
                 return res.status(500).json({ message: error.message || "Internal server error" });

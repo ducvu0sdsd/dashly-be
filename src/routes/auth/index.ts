@@ -24,4 +24,6 @@ router.post('/get-by-token', middleware.checkToken ,authController.getByToken)
 
 router.put('/reset-password/:userid', middleware.checkToken, authController.resetPassword)
 
+router.delete('/delete-account/:id', middleware.checkToken, authController.deleteAccount)
+
 export default router;
