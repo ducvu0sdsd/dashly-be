@@ -59,7 +59,12 @@ export class UserService {
             if(!exist) {
                 throw new Error(FailMessages.NOT_FOUND_USER)
             }
-            const result = await userModels.findByIdAndDelete(id);
+
+            exist.auth.isDeleted.timestamp = new Date().toISOString()
+
+            exist.auth.isDeleted.value = true;
+
+            const result = await userModels.findByIdAndUpdate(id, exist);
             if(!result) {
                 throw new Error(FailMessages.COMMON)
             }

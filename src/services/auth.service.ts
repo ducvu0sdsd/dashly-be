@@ -157,6 +157,10 @@ export class AuthService {
             if (!isPasswordValid) {
                 throw new Error(FailMessages.INVALID_PASSWORD)
             }
+
+            if (userFound.auth.isDeleted.value) {
+                throw new Error(FailMessages.ACCOUNT_DELETED)
+            }
             
             return {
                 user: userFound,

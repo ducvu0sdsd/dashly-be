@@ -28,6 +28,10 @@ export interface IUser extends Document {
       verification: {
         otp: string;
         createdAt: string;
+      }, 
+      isDeleted: {
+        value: boolean;
+        timestamp: string;
       }
     };
     createdAt: string;
@@ -57,6 +61,10 @@ const UserSchema: Schema = new Schema(
       username: { type: String, default: "" },
       password: { type: String, default: "" },
       emailVerify: { type: Boolean, default: false },
+      isDeleted: {
+        timestamp: {type: String, default: ''},
+        value: {type: Boolean, default: false}
+      },
       passwordsUserd: { 
         type: [{
           timestamp: { type: String, default: "" },
