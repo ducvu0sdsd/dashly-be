@@ -10,7 +10,6 @@ export interface DesignInterface {
     };
     like: number;
     view: number;
-    description: string;
     createdAt: string;
     updatedAt: string;
     content: string;
@@ -24,6 +23,5 @@ export interface CreateDesignInterface {
         fullName: string;
         avatar: string;
     };
-    description: string;
     content: string;
 }

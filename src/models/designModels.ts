@@ -11,7 +11,6 @@ export interface IDesign extends Document {
     };
     like: number;
     view: number;
-    description: string;
     createdAt: string;
     updatedAt: string;
     content: string;
@@ -29,7 +28,6 @@ const DesignSchema: Schema = new Schema(
         },
         like: { type: Number, default: 0 },
         view: { type: Number, default: 0 },
-        description: { type: String, required: true },
         content: { type: String, required: true },
     },
     { timestamps: true } 
