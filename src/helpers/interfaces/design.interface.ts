@@ -7,8 +7,11 @@ export interface DesignInterface {
         _id: string;
         fullName: string;
         avatar: string;
+        email: string;
+        country: string;
+        phoneNumber: string
     };
-    like: number;
+    slug: string;
     view: number;
     createdAt: string;
     updatedAt: string;
@@ -22,6 +25,9 @@ export interface CreateDesignInterface {
         _id: string;
         fullName: string;
         avatar: string;
+        email: string;
+        country: string;
+        phoneNumber: string;
     };
     content: string;
 }

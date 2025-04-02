@@ -1,20 +1,25 @@
 import express from "express";
 import { DesignController } from "../../controllers/design.controller";
+import { Middleware } from "../../middlewares/auth.middleware";
 
 const router = express.Router();
 
 const designController = new DesignController()
 
-router.get("/user/:userid", designController.getByUserId)
+const middleware = new Middleware()
 
-router.get("/:id", designController.getById)
+router.get("/get-by-user/:userid", middleware.checkToken, designController.getByUserId)
 
-router.delete("/:id", designController.delete)
+router.get("/:id", middleware.checkToken, designController.getById)
 
-router.put("/:id", designController.update)
+router.delete("/:id", middleware.checkToken , designController.delete)
 
-router.post("/", designController.create)
+router.put("/:id", middleware.checkToken, designController.update)
 
-router.get("/", designController.getAll)
+router.post("/", middleware.checkToken, designController.create)
+
+router.get("/", middleware.checkToken, designController.getAll)
+
+router.get("/get-by-slug/:slug", middleware.checkToken, designController.getBySlug)
 
 export default router;

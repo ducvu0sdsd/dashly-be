@@ -8,8 +8,11 @@ export interface IDesign extends Document {
         _id: string;
         fullName: string;
         avatar: string;
+        email: string;
+        country: string;
+        phoneNumber: string;
     };
-    like: number;
+    slug: string;
     view: number;
     createdAt: string;
     updatedAt: string;
@@ -21,12 +24,15 @@ const DesignSchema: Schema = new Schema(
         name: { type: String, required: true },
         images: { type: [String], required: true },
         mainImage: { type: String, required: true },
+        slug: { type: String, required: true, unique: true },
         user: {
             _id: { type: String, required: true },
             fullName: { type: String, required: true },
             avatar: { type: String, required: true },
+            email: { type: String, required: true },
+            country: { type: String, required: true },
+            phoneNumber: { type: String, required: true },
         },
-        like: { type: Number, default: 0 },
         view: { type: Number, default: 0 },
         content: { type: String, required: true },
     },

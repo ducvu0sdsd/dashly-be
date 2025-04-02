@@ -3,6 +3,7 @@ import { UserService } from "../services/user.service";
 import { CreateUserInterface } from "../helpers/interfaces/user.interface";
 import { IUser } from "../models/userModels";
 import { SuccessMessages } from "../helpers/enums/messages.enum";
+import { TokensInterface } from "../helpers/interfaces/auth.interface";
 
 export class UserController {
     private userService: UserService;
@@ -28,32 +29,34 @@ export class UserController {
     }
 
     update(req: Request, res: Response): any {
+        const { tokens } = req as Request & { tokens?: TokensInterface };
         const id = req.params.id;
         const data = req.body;
         this.userService.update({id, data})
             .then(user => {
-                return res.status(200).json({message : SuccessMessages.UPDATE_USER, data: user});
+                return res.status(200).json({message : SuccessMessages.UPDATE_USER, data: user, tokens});
             })
             .catch(error => {
-                return res.status(500).json({ message: error.message || "Internal server error" });
+                return res.status(500).json({ message: error.message || "Internal server error" , tokens});
             });
     }
 
     delete(req: Request, res: Response): any {
+        const { tokens } = req as Request & { tokens?: TokensInterface };
         const id = req.params.id;
         this.userService.delete(id)
             .then(deleted => {
-                return res.status(200).json({message : SuccessMessages.DELETE_USER, data: deleted});
+                return res.status(200).json({message : SuccessMessages.DELETE_USER, data: deleted, tokens});
             })
             .catch(error => {
-                return res.status(500).json({ message: error.message || "Internal server error" });
+                return res.status(500).json({ message: error.message || "Internal server error", tokens });
             });
     }
 
     getAll(req: Request, res: Response): any {
         this.userService.getAll()
             .then(users => {
-                return res.status(200).json(users);
+                return res.status(200).json({data: users});
             })
             .catch(error => {
                 return res.status(500).json({ message: error.message || "Internal server error" });
@@ -62,17 +65,13 @@ export class UserController {
 
     getById(req: Request, res: Response): any {
         const id = req.params.id;
-        this.userService.getById(id)
+        this.userService.getById(id, true)
             .then(user => {
-                if(!user) {
-                    return res.status(500).json({ message: user });
-                }
-                return res.status(200).json(user);
+                return res.status(200).json({data: user});
             })
             .catch(error => {
                 return res.status(500).json({ message: error.message || "Internal server error" });
             });
     }
 
-    
 }

@@ -74,33 +74,54 @@ export class UserService {
         }
     }
 
-    public getAll = async (): Promise<IUser[]> => {
+    public getAll = async (hiddenPassword? : boolean): Promise<IUser[]> => {
         try {
-            const result = await userModels.find().lean();
+            let result = await userModels.find().lean();
+
+            if (hiddenPassword) {
+                result = result.map(item => {
+                    item.auth.password = ''
+                    return item
+                })
+            }
+
             return result;
+            
         } catch (error) {
             throw error instanceof Error ? error : new Error(FailMessages.COMMON);
         }
     }
 
-    public getById = async (id: string): Promise<IUser> => {
+    public getById = async (id: string, hiddenPassword? : boolean): Promise<IUser> => {
         try {
             const result = await userModels.findById(id).lean();
+
             if(!result) {
                 throw new Error(FailMessages.NOT_FOUND_USER)
             }
+
+            if (hiddenPassword) {
+                result.auth.password = ''
+            }
+
             return result;
         } catch (error) {
             throw error instanceof Error ? error : new Error(FailMessages.COMMON);
         }
     }
 
-    public getByUsername = async (username: string): Promise<IUser> => {
+    public getByUsername = async (username: string, hiddenPassword? : boolean): Promise<IUser> => {
         try {
             const result = await userModels.findOne({'auth.username': username}).lean();
+
             if(!result) {
                 throw new Error(FailMessages.NOT_FOUND_USER)
             }
+
+            if (hiddenPassword) {
+                result.auth.password = ''
+            }
+
             return result;
 
         } catch (error) {
@@ -108,12 +129,18 @@ export class UserService {
         }
     }
 
-    public getByEmail = async (email: string): Promise<IUser> => {
+    public getByEmail = async (email: string, hiddenPassword? : boolean): Promise<IUser> => {
         try {
             const result = await userModels.findOne({'email': email}).lean();
+
             if(!result) {
                 throw new Error(FailMessages.NOT_FOUND_USER)
             }
+
+            if (hiddenPassword) {
+                result.auth.password = ''
+            }
+
             return result;
 
         } catch (error) {

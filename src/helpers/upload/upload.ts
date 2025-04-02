@@ -70,3 +70,23 @@ export const uploadImagesToCloudinary = async (req: Request, res: Response): Pro
         res.status(500).json({ message: "Error uploading images to Cloudinary", tokens });
     }
 };
+
+// xóa ảnh
+export const deleteImagesFromCloudinary = async (req: Request, res: Response): Promise<void> => {
+    const { public_ids } = req.body; // Nhận danh sách public_id từ request
+    const { tokens } = req as Request & { tokens?: TokensInterface };
+    try {
+        if (!Array.isArray(public_ids) || public_ids.length === 0) {
+            res.status(400).json({ message: "Missing or invalid public_ids array." });
+            return;
+        }
+        
+        // Gọi API Cloudinary để xóa nhiều ảnh cùng lúc
+        const result = await cloudinary.api.delete_resources(public_ids, { invalidate: true });
+
+        res.status(200).json({ data: result, tokens });
+    } catch (error) {
+        console.error("Delete error:", error);
+        res.status(500).json({ message: "Error deleting images from Cloudinary.", tokens });
+    }
+};
