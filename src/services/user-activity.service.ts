@@ -15,7 +15,7 @@ export class UserActivityService {
 
             this.designService = new DesignService()
 
-            const {userId, targetId, actionType} = data
+            const {userId, targetId, actionType, rating} = data
             
             const existUser = await this.userService.getById(userId)
 
@@ -29,7 +29,7 @@ export class UserActivityService {
                 throw new Error(FailMessages.NOT_FOUND_DESIGN)
             } 
 
-            const result = await userActivityModels.create({userId, targetId, actionType})
+            const result = await userActivityModels.create({userId, targetId, actionType, rating})
 
             return result;
         } catch (error) {

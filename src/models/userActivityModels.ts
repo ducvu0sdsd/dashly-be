@@ -20,7 +20,7 @@ const UserActivitySchema: Schema = new Schema(
 
     actionType: { type: String, enum: ['like', 'rate'], required: true },
 
-    rating: { type: Number, default: -1 },
+    rating: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
