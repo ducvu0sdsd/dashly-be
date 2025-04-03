@@ -56,49 +56,45 @@ export class DesignController {
     }
 
     getAll(req: Request, res: Response): any {
-        const { tokens } = req as Request & { tokens?: TokensInterface };
         this.designService.getAll()
             .then(designs => {
-                return res.status(200).json({data: designs, tokens});
+                return res.status(200).json({data: designs});
             })
             .catch(error => {
-                return res.status(500).json({ message: error.message || "Internal server error" , tokens});
+                return res.status(500).json({ message: error.message || "Internal server error" });
             });
     }
 
     getById(req: Request, res: Response): any {
-        const { tokens } = req as Request & { tokens?: TokensInterface };
         const id = req.params.id;
         this.designService.getById(id)
             .then(design => {
-                return res.status(200).json({data: design, tokens});
+                return res.status(200).json({data: design});
             })
             .catch(error => {
-                return res.status(500).json({ message: error.message || "Internal server error", tokens });
+                return res.status(500).json({ message: error.message || "Internal server error" });
             });
     }
 
     getBySlug(req: Request, res: Response): any {
-        const { tokens } = req as Request & { tokens?: TokensInterface };
         const {slug} = req.params;
         this.designService.getBySlug(slug)
             .then(design => {
-                return res.status(200).json({data: design, tokens});
+                return res.status(200).json({data: design});
             })
             .catch(error => {
-                return res.status(500).json({ message: error.message || "Internal server error", tokens });
+                return res.status(500).json({ message: error.message || "Internal server error" });
             });
     }
     
     getByUserId(req: Request, res: Response): any {
-        const { tokens } = req as Request & { tokens?: TokensInterface };
         const userid = req.params.userid;
         this.designService.getByUserId(userid)
             .then(designs => {
-                return res.status(200).json({data: designs, tokens});
+                return res.status(200).json({data: designs});
             })
             .catch(error => {
-                return res.status(500).json({ message: error.message || "Internal server error", tokens });
+                return res.status(500).json({ message: error.message || "Internal server error" });
             });
     }
 }

@@ -8,9 +8,9 @@ const designController = new DesignController()
 
 const middleware = new Middleware()
 
-router.get("/get-by-user/:userid", middleware.checkToken, designController.getByUserId)
+router.get("/get-by-user/:userid", designController.getByUserId)
 
-router.get("/:id", middleware.checkToken, designController.getById)
+router.get("/:id", designController.getById)
 
 router.delete("/:id", middleware.checkToken , designController.delete)
 
@@ -18,8 +18,8 @@ router.put("/:id", middleware.checkToken, designController.update)
 
 router.post("/", middleware.checkToken, designController.create)
 
-router.get("/", middleware.checkToken, designController.getAll)
+router.get("/", designController.getAll)
 
-router.get("/get-by-slug/:slug", middleware.checkToken, designController.getBySlug)
+router.get("/get-by-slug/:slug", designController.getBySlug)
 
 export default router;
