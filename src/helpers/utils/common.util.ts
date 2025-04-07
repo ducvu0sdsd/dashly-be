@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { IComment, ICommentResponse } from "../../models/commentModels";
 
 export function generateOTP(): string {
     
