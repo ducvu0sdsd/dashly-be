@@ -15,6 +15,8 @@ export class UserController {
         this.delete = this.delete.bind(this);
         this.getAll = this.getAll.bind(this);
         this.getById = this.getById.bind(this);
+        this.getBySlug = this.getBySlug.bind(this);
+        this.getInformationBySlug = this.getInformationBySlug.bind(this);
     }
 
     create(req: Request, res: Response): any {
@@ -68,6 +70,28 @@ export class UserController {
         this.userService.getById(id, true)
             .then(user => {
                 return res.status(200).json({data: user});
+            })
+            .catch(error => {
+                return res.status(500).json({ message: error.message || "Internal server error" });
+            });
+    }
+
+    getBySlug(req: Request, res: Response): any {
+        const slug = req.params.slug;
+        this.userService.getBySlug(slug)
+            .then(user => {
+                return res.status(200).json({data: user});
+            })
+            .catch(error => {
+                return res.status(500).json({ message: error.message || "Internal server error" });
+            });
+    }
+
+    getInformationBySlug(req: Request, res: Response): any {
+        const slug = req.params.slug;
+        this.userService.getInformationBySlug(slug)
+            .then(data => {
+                return res.status(200).json({data: data});
             })
             .catch(error => {
                 return res.status(500).json({ message: error.message || "Internal server error" });

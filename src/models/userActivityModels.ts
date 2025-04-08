@@ -6,6 +6,7 @@ moment.tz.setDefault("Asia/Ho_Chi_Minh");
 export interface IUserActivity extends Document {
     userId: string;
     targetId: string;
+    authorId: string;
     actionType: TypeActions;
     createdAt?: string;
     updatedAt?: string;
@@ -17,6 +18,8 @@ const UserActivitySchema: Schema = new Schema(
     userId: { type: Schema.Types.ObjectId, required: true },
 
     targetId: { type: Schema.Types.ObjectId,required: true },
+
+    authorId: { type: Schema.Types.ObjectId,required: true },
 
     actionType: { type: String, enum: ['like', 'rate'], required: true },
 

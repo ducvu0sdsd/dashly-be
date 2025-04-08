@@ -92,6 +92,16 @@ export class UserActivityService {
         }
     };
 
+    public getByAuthorId = async (id: string): Promise<any> => {
+        try {
+            const result = await userActivityModels.find({authorId: id}).lean();
+
+            return result;
+        } catch (error) {
+            throw error instanceof Error ? error : new Error(FailMessages.COMMON);
+        }
+    };
+
     public getAll = async (): Promise<any> => {
         try {
             const result = await userActivityModels.find().lean();

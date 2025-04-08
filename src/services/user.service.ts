@@ -1,3 +1,4 @@
+import { UserActivityService } from './user-activity.service';
 import { ProcessSignups } from './../helpers/enums/users.enum';
 import userModels, { IUser } from "../models/userModels"
 import { CreateUserInterface } from '../helpers/interfaces/user.interface';
@@ -5,7 +6,15 @@ import { HashPassword } from "../helpers/utils/bcrypt.util";
 import { TypeAccounts } from "../helpers/enums/users.enum";
 import { FailMessages } from "../helpers/enums/messages.enum";
 import { generateUniqueUserSlug } from "../helpers/utils/common.util";
+import { DesignService } from './design.service';
+import { IDesign } from '../models/designModels';
+import { IUserActivity } from '../models/userActivityModels';
+import { TypeActions } from '../helpers/enums/user-activity.enum';
 export class UserService {
+
+    private designService!: DesignService
+
+    private userActivityService!: UserActivityService
 
     public create = async (data: CreateUserInterface): Promise<IUser> => {
         try {
@@ -102,6 +111,22 @@ export class UserService {
         }
     }
 
+    public getBySlug = async (slug: string): Promise<any> => {
+        try {
+            const result = await userModels.findOne({ 'auth.slug': slug }).lean();
+
+            if(!result) {
+                throw new Error(FailMessages.NOT_FOUND_USER)
+            }
+
+            result.auth.password = ''
+
+            return result;
+        } catch (error) {
+            throw error instanceof Error ? error : new Error(FailMessages.COMMON);
+        }
+    }
+
     public getById = async (id: string, hiddenPassword? : boolean): Promise<IUser> => {
         try {
             const result = await userModels.findById(id).lean();
@@ -158,5 +183,37 @@ export class UserService {
         }
     }
 
+    public getInformationBySlug = async (slug: string): Promise<any> => {
+        try {
+            this.designService = new DesignService()
 
+            this.userActivityService = new UserActivityService()
+
+            const result = await userModels.findOne({ 'auth.slug': slug }).lean();
+
+            if(!result) {
+                throw new Error(FailMessages.NOT_FOUND_USER)
+            }
+
+            result.auth.password = ''
+
+            const designs = await this.designService.getByUserId(result._id as string)
+
+            const likes = await this.userActivityService.getByAuthorId(result._id as string)
+
+            const totalView = designs.reduce((total: number, item: IDesign) => total += item.view ,0)
+
+            const totalLike = likes.length
+
+            return {
+                user: result,
+                designs,
+                totalLike,
+                totalView
+            };
+
+        } catch (error) {
+            throw error instanceof Error ? error : new Error(FailMessages.COMMON);
+        }
+    }
 }

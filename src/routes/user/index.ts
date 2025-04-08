@@ -18,4 +18,8 @@ router.post("/",userController.create)
 
 router.get("/", userController.getAll)
 
+router.get("/get-by-slug/:slug", userController.getBySlug)
+
+router.get("/get-information-by-slug/:slug", userController.getInformationBySlug)
+
 export default router;
