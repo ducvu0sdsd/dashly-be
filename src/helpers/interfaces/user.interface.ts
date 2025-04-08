@@ -9,6 +9,7 @@ export interface AuthInterface {
     isActive: boolean;
     processSignup: ProcessSignups;
     typeAccount: TypeAccounts;
+    slug?: string;
 }
 
 export interface UserInterface {

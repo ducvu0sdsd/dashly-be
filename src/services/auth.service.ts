@@ -2,10 +2,11 @@ import { FailMessages } from "../helpers/enums/messages.enum"
 import { ProcessSignups } from "../helpers/enums/users.enum"
 import { MailQueueInterface, UserInformationInterface } from "../helpers/interfaces/user.interface"
 import { HashPassword } from "../helpers/utils/bcrypt.util"
-import { generateOTP } from "../helpers/utils/common.util"
+import { generateOTP, generateUniqueUserSlug } from "../helpers/utils/common.util"
 import { generateAccessToken, generateRefreshToken } from "../helpers/utils/jwt.util"
 import { MailService } from "./mail.service"
 import { UserService } from "./user.service"
+import userModels from "../models/userModels"
 
 export class AuthService {
 
@@ -130,7 +131,9 @@ export class AuthService {
                 throw new Error(FailMessages.NOT_FOUND_USER)
             }
 
-            const userUpdated = await this.userService.update({id: user_id, data: {...userFound, address, dob, fullName, gender, phoneNumber, country, auth : {...userFound.auth, processSignup: ProcessSignups.STEP3}}})
+            const slug = await generateUniqueUserSlug(fullName, userModels)
+
+            const userUpdated = await this.userService.update({id: user_id, data: {...userFound, address, dob, fullName, gender, phoneNumber, country, auth : {...userFound.auth, slug ,processSignup: ProcessSignups.STEP3}}})
 
             return {
                 user: userUpdated,

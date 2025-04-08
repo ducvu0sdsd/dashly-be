@@ -17,3 +17,15 @@ export function createSlug(name: string): string {
       .replace(/\s+/g, "-") // Thay thế khoảng trắng bằng "-"
       .replace(/-+/g, "-"); // Xóa dấu "-" lặp lại
 }
+
+export async function generateUniqueUserSlug(name: string, db: any) {
+  const baseSlug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  let slug = baseSlug;
+  let counter = 1;
+
+  while (await db.findOne({ slug })) {
+    slug = `${baseSlug}-${counter++}`;
+  }
+
+  return slug;
+}

@@ -1,8 +1,10 @@
+import { ProcessSignups } from './../helpers/enums/users.enum';
 import userModels, { IUser } from "../models/userModels"
 import { CreateUserInterface } from '../helpers/interfaces/user.interface';
 import { HashPassword } from "../helpers/utils/bcrypt.util";
 import { TypeAccounts } from "../helpers/enums/users.enum";
 import { FailMessages } from "../helpers/enums/messages.enum";
+import { generateUniqueUserSlug } from "../helpers/utils/common.util";
 export class UserService {
 
     public create = async (data: CreateUserInterface): Promise<IUser> => {
@@ -40,9 +42,15 @@ export class UserService {
     public update = async ({id, data}: {id: string, data: any}): Promise<IUser> => {
         try {
             const exist = await userModels.findById(id);
+
             if(!exist) {
                 throw new Error(FailMessages.NOT_FOUND_USER)
             }
+
+            if (data.fullName !== exist.fullName) {
+                data.auth.slug = await generateUniqueUserSlug(data.fullName, userModels)
+            }
+
             const result = await userModels.findByIdAndUpdate(id, data, { new: true, runValidators: true });
             if (!result) {
                 throw new Error(FailMessages.UPDATE_FAIL);
@@ -77,6 +85,8 @@ export class UserService {
     public getAll = async (hiddenPassword? : boolean): Promise<IUser[]> => {
         try {
             let result = await userModels.find().lean();
+
+            result = result.filter(user => user.auth.processSignup === ProcessSignups.STEP3 && user.majors.length > 0)
 
             if (hiddenPassword) {
                 result = result.map(item => {

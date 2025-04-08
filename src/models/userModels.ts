@@ -15,7 +15,9 @@ export interface IUser extends Document {
     gender: Genders;
     country: string;
     socialLinks: string[];
+    majors: string[];
     auth: {
+      slug: string;
       username: string;
       password: string;
       emailVerify: boolean;
@@ -49,6 +51,7 @@ const UserSchema: Schema = new Schema(
     email: { type: String, default: "" },
     bio: { type: String, default: "" },
     gender: { type: String, default: Genders.OTHER },
+    majors: { type: [String], default: []},
     socialLinks: { 
       facebook: { type: String, default: "" },
       instagram: { type: String, default: "" },
@@ -73,6 +76,7 @@ const UserSchema: Schema = new Schema(
         default: [], 
         _id: false
       },
+      slug: { type: String, default: '' },
       lastLogin: { type: String, default: new Date().toISOString() },
       role: { type: String,  default: Roles.USER },
       isActive: { type: Boolean, default: false },
