@@ -4,6 +4,7 @@ export interface IDesign extends Document {
     name: string;
     images: string[];
     mainImage: string;
+    designType: string;
     user: {
         _id: string;
         fullName: string;
@@ -11,6 +12,12 @@ export interface IDesign extends Document {
         email: string;
         country: string;
         phoneNumber: string;
+    };
+    links : {
+        github: string;
+        gitlab: string;
+        youtube: string;
+        download: string;
     };
     slug: string;
     view: number;
@@ -25,6 +32,13 @@ const DesignSchema: Schema = new Schema(
         images: { type: [String], required: true },
         mainImage: { type: String, required: true },
         slug: { type: String, required: true, unique: true },
+        designType: { type: String, required: true },
+        links: {
+            github: { type: String, default: '' },
+            gitlab: { type: String, default: '' },
+            youtube: { type: String, default: '' },
+            download: { type: String, default: '' }
+        },
         user: {
             _id: { type: String, required: true },
             fullName: { type: String, required: true },

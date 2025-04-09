@@ -15,7 +15,7 @@ export class UserActivityService {
 
             this.designService = new DesignService()
 
-            const {userId, targetId, actionType, rating} = data
+            const {userId, targetId, actionType, rating, authorId} = data
             
             const existUser = await this.userService.getById(userId)
 
@@ -29,7 +29,7 @@ export class UserActivityService {
                 throw new Error(FailMessages.NOT_FOUND_DESIGN)
             } 
 
-            const result = await userActivityModels.create({userId, targetId, actionType, rating})
+            const result = await userActivityModels.create({userId, targetId, actionType, rating, authorId})
 
             return result;
         } catch (error) {
@@ -48,6 +48,20 @@ export class UserActivityService {
             const result = await userActivityModels.findByIdAndUpdate(id, data, { new: true, runValidators: true });
 
             return result;
+        } catch (error) {
+            throw error instanceof Error ? error : new Error(FailMessages.COMMON);
+        }
+    };
+
+    public deleteByDesignId = async (id: string): Promise<any> => {
+        try {
+
+            const result = await userActivityModels.deleteMany({targetId: id})
+
+            if (!result) {
+                throw new Error(FailMessages.DELETE_DESIGN)
+            }
+            return true;
         } catch (error) {
             throw error instanceof Error ? error : new Error(FailMessages.COMMON);
         }

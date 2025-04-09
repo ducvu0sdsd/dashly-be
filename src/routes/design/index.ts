@@ -22,4 +22,6 @@ router.get("/", designController.getAll)
 
 router.get("/get-by-slug/:slug", designController.getBySlug)
 
+router.get("/get-by-design-type/:type", designController.getByDesignType)
+
 export default router;

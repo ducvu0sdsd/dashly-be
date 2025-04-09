@@ -45,13 +45,11 @@ export class DesignService {
 
     public delete = async (id: string): Promise<any> => {
         try {
-            const exist = await designModels.findById(id);
-
-            if (!exist) {
-                throw new Error(FailMessages.NOT_FOUND_DESIGN)
-            }
+            this.userActivityService = new UserActivityService()
 
             const result = await designModels.findByIdAndDelete(id);
+
+            await this.userActivityService.deleteByDesignId(id)
 
             if (!result) {
                 throw new Error(FailMessages.DELETE_DESIGN)
@@ -98,6 +96,16 @@ export class DesignService {
         }
     };
 
+    public getByDesignType = async (designType: string): Promise<any[]> => {
+        try {
+            const result = await designModels.find({designType});
+
+            return result;
+        } catch (error) {
+            throw error instanceof Error ? error : new Error(FailMessages.COMMON);
+        }
+    };
+
     public getByUserId = async (userid: string): Promise<any> => {
         try {
             this.userActivityService = new UserActivityService()
@@ -110,11 +118,11 @@ export class DesignService {
 
             let result = await designModels.find({'user._id': userid }).lean();
 
-            const activities = await this.userActivityService.getAll()
+            const activities = await this.userActivityService.getByAuthorId(userid)
             
             result = result.map(item => {
-                const likes = activities.filter((act: IUserActivity) => act.targetId === item._id && act.actionType === TypeActions.LIKE)
-                const rates = activities.filter((act: IUserActivity) => act.targetId === item._id && act.actionType === TypeActions.RATE)
+                const likes = activities.filter((act: IUserActivity) => act.targetId.toString() === item._id.toString() && act.actionType === TypeActions.LIKE)
+                const rates = activities.filter((act: IUserActivity) => act.targetId.toString() === item._id.toString() && act.actionType === TypeActions.RATE)
                 const ratePercent = rates.length === 0 ? -1 : rates.reduce((total: number, item: any) => total += item.rating ,0) / rates.length
                 return {...item, like: likes.length, rating: ratePercent}
             })

@@ -15,4 +15,6 @@ router.post("/", userActivityController.create)
 
 router.get("/get-by-design/:targetid", userActivityController.getByDesignId)
 
+router.get("/get-by-author/:authorid", userActivityController.getByAuthorId)
+
 export default router;

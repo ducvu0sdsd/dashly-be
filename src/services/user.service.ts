@@ -203,7 +203,7 @@ export class UserService {
 
             const totalView = designs.reduce((total: number, item: IDesign) => total += item.view ,0)
 
-            const totalLike = likes.length
+            const totalLike = likes.filter((item : IUserActivity) => item.actionType === TypeActions.LIKE).length
 
             return {
                 user: result,

@@ -13,6 +13,7 @@ export class UserActivityController {
         this.delete = this.delete.bind(this);
         this.getByUserId = this.getByUserId.bind(this);
         this.getByDesignId = this.getByDesignId.bind(this);
+        this.getByAuthorId = this.getByAuthorId.bind(this);
     }
 
     create(req: Request, res: Response): any {
@@ -63,6 +64,17 @@ export class UserActivityController {
     getByDesignId(req: Request, res: Response): any {
         const targetid = req.params.targetid;
         this.userActivityService.getByDesignId(targetid)
+            .then(userActivities => {
+                return res.status(200).json({data: userActivities});
+            })
+            .catch(error => {
+                return res.status(500).json({ message: error.message || "Internal server error" });
+            });
+    }
+
+    getByAuthorId(req: Request, res: Response): any {
+        const authorId = req.params.authorid;
+        this.userActivityService.getByAuthorId(authorId)
             .then(userActivities => {
                 return res.status(200).json({data: userActivities});
             })

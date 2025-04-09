@@ -16,6 +16,7 @@ export class DesignController {
         this.getById = this.getById.bind(this);
         this.getByUserId = this.getByUserId.bind(this);
         this.getBySlug = this.getBySlug.bind(this);
+        this.getByDesignType = this.getByDesignType.bind(this);
     }
 
     create(req: Request, res: Response): any {
@@ -81,6 +82,17 @@ export class DesignController {
         this.designService.getBySlug(slug)
             .then(design => {
                 return res.status(200).json({data: design});
+            })
+            .catch(error => {
+                return res.status(500).json({ message: error.message || "Internal server error" });
+            });
+    }
+
+    getByDesignType(req: Request, res: Response): any {
+        const {type} = req.params;
+        this.designService.getByDesignType(type)
+            .then(designs => {
+                return res.status(200).json({data: designs});
             })
             .catch(error => {
                 return res.status(500).json({ message: error.message || "Internal server error" });
