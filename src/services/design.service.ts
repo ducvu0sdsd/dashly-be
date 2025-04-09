@@ -62,7 +62,18 @@ export class DesignService {
 
     public getAll = async (): Promise<any> => {
         try {
-            const result = await designModels.find();
+            this.userActivityService = new UserActivityService()
+
+            let result = await designModels.find().lean();
+            
+            const activities = await this.userActivityService.getAll()
+
+            result = result.map(item => {
+                const likes = activities.filter((act: IUserActivity) => act.targetId.toString() === item._id.toString() && act.actionType === TypeActions.LIKE)
+                const rates = activities.filter((act: IUserActivity) => act.targetId.toString() === item._id.toString() && act.actionType === TypeActions.RATE)
+                const ratePercent = rates.length === 0 ? -1 : rates.reduce((total: number, item: any) => total += item.rating ,0) / rates.length
+                return {...item, like: likes.length, rating: ratePercent, likes}
+            })
 
             return result;
         } catch (error) {
