@@ -5,6 +5,7 @@ import authRoutes from './auth'
 import uploadRoute from './upload'
 import UserActivitiesRoute from './user-activity'
 import CommentRoute from './comment'
+import FollowRoute from './following'
 
 const router = express.Router();
 
@@ -14,5 +15,6 @@ router.use("/api/v1/auths", authRoutes);
 router.use("/api/v1/upload", uploadRoute)
 router.use("/api/v1/user-activities", UserActivitiesRoute)
 router.use("/api/v1/comments", CommentRoute)
+router.use("/api/v1/follows", FollowRoute)
 
 export default router;

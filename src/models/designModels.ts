@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface IDesign extends Document {
     name: string;
     images: string[];
+    colors: string[];
     mainImage: string;
     designType: string;
     user: {
@@ -33,6 +34,7 @@ const DesignSchema: Schema = new Schema(
         mainImage: { type: String, required: true },
         slug: { type: String, required: true, unique: true },
         designType: { type: String, required: true },
+        colors: {type: [String], default: []},
         links: {
             github: { type: String, default: '' },
             gitlab: { type: String, default: '' },
