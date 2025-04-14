@@ -16,7 +16,9 @@ export class DesignController {
         this.getById = this.getById.bind(this);
         this.getByUserId = this.getByUserId.bind(this);
         this.getBySlug = this.getBySlug.bind(this);
-        this.getByDesignType = this.getByDesignType.bind(this);
+        this.getByCreatedAtAndName = this.getByCreatedAtAndName.bind(this);
+        this.getByTypeAndCreatedAtAndName = this.getByTypeAndCreatedAtAndName.bind(this);
+        this.aprroveVerification = this.aprroveVerification.bind(this);
     }
 
     create(req: Request, res: Response): any {
@@ -87,17 +89,6 @@ export class DesignController {
                 return res.status(500).json({ message: error.message || "Internal server error" });
             });
     }
-
-    getByDesignType(req: Request, res: Response): any {
-        const {type} = req.params;
-        this.designService.getByDesignType(type)
-            .then(designs => {
-                return res.status(200).json({data: designs});
-            })
-            .catch(error => {
-                return res.status(500).json({ message: error.message || "Internal server error" });
-            });
-    }
     
     getByUserId(req: Request, res: Response): any {
         const userid = req.params.userid;
@@ -107,6 +98,41 @@ export class DesignController {
             })
             .catch(error => {
                 return res.status(500).json({ message: error.message || "Internal server error" });
+            });
+    }
+
+    getByCreatedAtAndName(req: Request, res: Response): any {
+        const {created, name} = req.params;
+        this.designService.getByCreatedAtAndName(created, name)
+            .then(designs => {
+                return res.status(200).json({data: designs});
+            })
+            .catch(error => {
+                return res.status(500).json({ message: error.message || "Internal server error" });
+            });
+    }
+
+    getByTypeAndCreatedAtAndName(req: Request, res: Response): any {
+        const {created, type, name} = req.params;
+        this.designService.getByDesignTypeAndCreatedAtAndName(type, created, name)
+            .then(designs => {
+                return res.status(200).json({data: designs});
+            })
+            .catch(error => {
+                return res.status(500).json({ message: error.message || "Internal server error" });
+            });
+    }
+
+    aprroveVerification(req: Request, res: Response): any {
+        const id = req.params.id;
+        const data = req.body;
+        const { tokens } = req as Request & { tokens?: TokensInterface };
+        this.designService.aprroveVerification(id, data)
+            .then(design => {
+                return res.status(200).json({message : SuccessMessages.UPDATED_DESIGN, data: design, tokens});
+            })
+            .catch(error => {
+                return res.status(500).json({ message: error.message || "Internal server error" , tokens});
             });
     }
 }

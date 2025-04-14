@@ -24,6 +24,7 @@ export interface IDesign extends Document {
     view: number;
     createdAt: string;
     updatedAt: string;
+    verification: boolean;
     content: string;
 }
 
@@ -50,6 +51,7 @@ const DesignSchema: Schema = new Schema(
             phoneNumber: { type: String, required: true },
         },
         view: { type: Number, default: 0 },
+        verification: {type: Boolean, default: false},
         content: { type: String, required: true },
     },
     { timestamps: true } 

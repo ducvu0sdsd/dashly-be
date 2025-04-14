@@ -31,3 +31,8 @@ export interface CreateDesignInterface {
     };
     content: string;
 }
+
+export interface OptionInterface {
+    label: string;
+    value: string;
+}

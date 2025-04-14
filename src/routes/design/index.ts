@@ -16,12 +16,16 @@ router.delete("/:id", middleware.checkToken , designController.delete)
 
 router.put("/:id", middleware.checkToken, designController.update)
 
+router.put("/approve-design/:id", middleware.checkToken, designController.aprroveVerification)
+
 router.post("/", middleware.checkToken, designController.create)
 
 router.get("/", designController.getAll)
 
 router.get("/get-by-slug/:slug", designController.getBySlug)
 
-router.get("/get-by-design-type/:type", designController.getByDesignType)
+router.get("/get-by-created-at-and-name/:created/:name", designController.getByCreatedAtAndName)
+
+router.get("/get-by-design-type-and-created-at-and-name/:type/:created/:name", designController.getByTypeAndCreatedAtAndName)
 
 export default router;

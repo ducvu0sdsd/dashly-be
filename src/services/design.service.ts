@@ -1,14 +1,20 @@
+import { NotificationService } from './notification.service';
 import designModels from "../models/designModels";
-import { CreateDesignInterface } from "../helpers/interfaces/design.interface";
+import { CreateDesignInterface, OptionInterface } from "../helpers/interfaces/design.interface";
 import userModels from "../models/userModels";
 import { FailMessages } from "../helpers/enums/messages.enum";
 import { UserActivityService } from "./user-activity.service";
 import { IUserActivity } from "../models/userActivityModels";
 import { TypeActions } from "../helpers/enums/user-activity.enum";
 import { createSlug } from "../helpers/utils/common.util";
+import { TimeFilter } from "../helpers/enums/design.enum";
+import { startOfWeek, subWeeks, startOfYear } from 'date-fns';
+import { INotification } from '../models/notificationModels';
 export class DesignService {
 
     private userActivityService!: UserActivityService
+
+    private notificationService!: NotificationService
 
     public create = async (data: CreateDesignInterface): Promise<any> => {
         try {
@@ -107,15 +113,99 @@ export class DesignService {
         }
     };
 
-    public getByDesignType = async (designType: string): Promise<any[]> => {
+    public getByDesignTypeAndCreatedAtAndName = async (designType: string, createAt: string, name: string): Promise<any[]> => {
         try {
-            const result = await designModels.find({designType});
+            this.userActivityService = new UserActivityService()
+
+            const options: Record<string, string> = {
+                [TimeFilter.Now]: new Date().toISOString(),
+    
+                [TimeFilter.ThisWeek]: startOfWeek(new Date(), { weekStartsOn: 1 }).toISOString(),
+    
+                [TimeFilter.ThisPastWeek]: startOfWeek(subWeeks(new Date(), 1), { weekStartsOn: 1 }).toISOString(),
+    
+                [TimeFilter.ThisYear]: startOfYear(new Date()).toISOString(),
+    
+                [TimeFilter.AllTime]: new Date(0).toISOString(), // 1970-01-01T00:00:00.000Z
+            };
+    
+            const fromDate = options[createAt];
+
+            let result = await designModels.find({
+                ...(createAt !== 'none' && {
+                    createdAt: { $gte: new Date(fromDate) }
+                }),
+                ...(name !== 'none' && {
+                    $or: [
+                        { name: { $regex: name, $options: 'i' } },
+                        { 'user.fullName': { $regex: name, $options: 'i' } }
+                    ],
+                }),
+                designType,
+                verification: true
+            }).lean();
+
+            const activities = await this.userActivityService.getAll()
+
+            result = result.map(item => {
+                const likes = activities.filter((act: IUserActivity) => act.targetId.toString() === item._id.toString() && act.actionType === TypeActions.LIKE)
+                const rates = activities.filter((act: IUserActivity) => act.targetId.toString() === item._id.toString() && act.actionType === TypeActions.RATE)
+                const ratePercent = rates.length === 0 ? -1 : rates.reduce((total: number, item: any) => total += item.rating ,0) / rates.length
+                return {...item, like: likes.length, rating: ratePercent, likes}
+            })
 
             return result;
         } catch (error) {
             throw error instanceof Error ? error : new Error(FailMessages.COMMON);
         }
     };
+
+    public getByCreatedAtAndName = async (createAt: string, name: string): Promise<any[]> => {
+        try {
+            this.userActivityService = new UserActivityService()
+
+            const options: Record<string, string> = {
+                [TimeFilter.Now]: new Date().toISOString(),
+    
+                [TimeFilter.ThisWeek]: startOfWeek(new Date(), { weekStartsOn: 1 }).toISOString(),
+    
+                [TimeFilter.ThisPastWeek]: startOfWeek(subWeeks(new Date(), 1), { weekStartsOn: 1 }).toISOString(),
+    
+                [TimeFilter.ThisYear]: startOfYear(new Date()).toISOString(),
+    
+                [TimeFilter.AllTime]: new Date(0).toISOString(), // 1970-01-01T00:00:00.000Z
+            };
+    
+            const fromDate = options[createAt];
+    
+            let result = await designModels.find({
+                ...(createAt !== 'none' && {
+                    createdAt: { $gte: new Date(fromDate) }
+                }),
+                ...(name !== 'none' && {
+                    $or: [
+                        { name: { $regex: name, $options: 'i' } },
+                        { 'user.fullName': { $regex: name, $options: 'i' } }
+                    ],
+                }),
+                verification: true
+            }).lean();
+
+            const activities = await this.userActivityService.getAll()
+
+            result = result.map(item => {
+                const likes = activities.filter((act: IUserActivity) => act.targetId.toString() === item._id.toString() && act.actionType === TypeActions.LIKE)
+                const rates = activities.filter((act: IUserActivity) => act.targetId.toString() === item._id.toString() && act.actionType === TypeActions.RATE)
+                const ratePercent = rates.length === 0 ? -1 : rates.reduce((total: number, item: any) => total += item.rating ,0) / rates.length
+                return {...item, like: likes.length, rating: ratePercent, likes}
+            })
+
+            return result;
+        } catch (error) {
+            throw error instanceof Error ? error : new Error(FailMessages.COMMON);
+        }
+    };
+    
 
     public getByUserId = async (userid: string): Promise<any> => {
         try {
@@ -144,4 +234,32 @@ export class DesignService {
             throw error instanceof Error ? error : new Error(FailMessages.COMMON);
         }
     };
+
+    public aprroveVerification = async (id: string, data: any): Promise<any> => {
+        try {
+            this.notificationService = new NotificationService()
+
+            const exist = await designModels.findById(id);
+
+            if (!exist) {
+                throw new Error(FailMessages.NOT_FOUND_DESIGN)
+            }
+
+            const result = await designModels.findByIdAndUpdate(id, data, { new: true, runValidators: true });
+
+            const newNotification: INotification = {
+                image: '/admin.jpg',
+                title: 'ADMIN_HAS_APPROVE_YOUR_DESIGN',
+                content: exist.name,
+                userId: exist.user._id
+            };
+
+            await this.notificationService.create(newNotification)
+
+            return result;
+        } catch (error) {
+            throw error instanceof Error ? error : new Error(FailMessages.COMMON);
+        }
+    };
+
 }
