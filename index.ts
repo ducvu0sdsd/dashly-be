@@ -23,8 +23,9 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 8080;
-const baseURL = process.env.BASE_URL || "http://localhost:3000";
-const baseURLDeploy = process.env.BASE_URL_DEPLOY || "https://dashly.vercel.app";
+const baseURL = "http://localhost:3000";
+const baseURLDeploy = "https://dashly.vercel.app";
+const baseURLRelease = "https://dashly.art";
 
 // Middleware
 app.use(express.json());
@@ -35,7 +36,7 @@ app.use(compression());
 
 // Cấu hình CORS
 const corsOptions = {
-  origin: [baseURL, baseURLDeploy],
+  origin: [baseURL, baseURLDeploy, baseURLRelease],
   allowedHeaders: ["Content-Type", "x-refresh-token", "authorization"]
 };
 app.use(cors(corsOptions));
