@@ -25,7 +25,7 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 const baseURL = "http://localhost:3000";
 const baseURLDeploy = "https://dashly.vercel.app";
-const baseURLRelease = "https://dashly.art";
+const baseURLRelease = "https://www.dashly.art";
 
 // Middleware
 app.use(express.json());
