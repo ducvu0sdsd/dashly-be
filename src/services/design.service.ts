@@ -138,7 +138,8 @@ export class DesignService {
                 ...(name !== 'none' && {
                     $or: [
                         { name: { $regex: name, $options: 'i' } },
-                        { 'user.fullName': { $regex: name, $options: 'i' } }
+                        { 'user.fullName': { $regex: name, $options: 'i' } },
+                        { content: { $regex: name, $options: 'i' } }
                     ],
                 }),
                 designType,
@@ -185,7 +186,8 @@ export class DesignService {
                 ...(name !== 'none' && {
                     $or: [
                         { name: { $regex: name, $options: 'i' } },
-                        { 'user.fullName': { $regex: name, $options: 'i' } }
+                        { 'user.fullName': { $regex: name, $options: 'i' } },
+                        { content: { $regex: name, $options: 'i' } }
                     ],
                 }),
                 verification: true
