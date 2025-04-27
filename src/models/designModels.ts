@@ -13,6 +13,7 @@ export interface IDesign extends Document {
         email: string;
         country: string;
         phoneNumber: string;
+        slug: string;
     };
     links : {
         github: string;
@@ -49,6 +50,7 @@ const DesignSchema: Schema = new Schema(
             email: { type: String, required: true },
             country: { type: String, required: true },
             phoneNumber: { type: String, required: true },
+            slug: { type: String, required: true },
         },
         view: { type: Number, default: 0 },
         verification: {type: Boolean, default: false},
