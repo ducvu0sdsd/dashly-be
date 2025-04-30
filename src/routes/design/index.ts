@@ -14,7 +14,7 @@ router.get("/:id", designController.getById)
 
 router.delete("/:id", middleware.checkToken , designController.delete)
 
-router.put("/:id", middleware.checkToken, designController.update)
+router.put("/:id", designController.update)
 
 router.put("/approve-design/:id", middleware.checkToken, designController.aprroveVerification)
 
