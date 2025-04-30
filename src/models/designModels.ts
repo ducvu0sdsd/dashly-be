@@ -6,6 +6,7 @@ export interface IDesign extends Document {
     colors: string[];
     mainImage: string;
     designType: string;
+    aspect: string;
     user: {
         _id: string;
         fullName: string;
@@ -36,6 +37,7 @@ const DesignSchema: Schema = new Schema(
         mainImage: { type: String, required: true },
         slug: { type: String, required: true, unique: true },
         designType: { type: String, required: true },
+        aspect: { type: String, required: true },
         colors: {type: [String], default: []},
         links: {
             github: { type: String, default: '' },
